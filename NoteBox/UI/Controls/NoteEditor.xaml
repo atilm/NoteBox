@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="NoteBox.Controls.NoteEditor"
+﻿<UserControl x:Class="NoteBox.UI.Controls.NoteEditor"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,6 +13,13 @@
             FontSize="16"
             AcceptsReturn="True"
             HorizontalScrollBarVisibility="Disabled"
-            VerticalScrollBarVisibility="Auto"/>
+            VerticalScrollBarVisibility="Auto"
+            SelectionChanged="TextBox_OnSelectionChanged">
+            <RichTextBox.Resources>
+                <Style TargetType="{x:Type Paragraph}">
+                    <Setter Property="Margin" Value="0" />
+                </Style>
+            </RichTextBox.Resources>
+        </RichTextBox>
     </DockPanel>
 </UserControl>

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace NoteBox
+namespace NoteBox.Utilities
 {
     public static class ClipboardUtility
     {

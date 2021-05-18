@@ -1,7 +1,8 @@
-﻿using Prism.Commands;
+﻿using NoteBox.Utilities;
+using Prism.Commands;
 using Prism.Mvvm;
 
-namespace NoteBox.Windows
+namespace NoteBox.UI.Windows
 {
     public class SnippetContainerViewModel : BindableBase
     {

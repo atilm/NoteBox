@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NoteBox
+namespace NoteBox.Utilities
 {
     public static class TimeStampGenerator
     {

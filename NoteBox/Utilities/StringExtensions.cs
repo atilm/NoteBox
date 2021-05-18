@@ -1,4 +1,4 @@
-﻿namespace NoteBox
+﻿namespace NoteBox.Utilities
 {
     public static class StringExtensions
     {
