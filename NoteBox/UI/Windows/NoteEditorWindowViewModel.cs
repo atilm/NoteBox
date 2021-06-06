@@ -27,13 +27,15 @@ namespace NoteBox.UI.Windows
 
         private string LoadFileContent(NoteFile noteFile)
         {
-            return Repository.Contains(noteFile) ? Repository.GetContent(noteFile) : $"{noteFile.Id} {noteFile.Name}";
+            return Repository.Contains(noteFile) ? Repository.GetContents(noteFile).Text : $"{noteFile.Id} {noteFile.Title}";
         }
 
         private void SaveFileContent()
         {
             _noteFile.SetFileNameWithoutExtension(EditorViewModel.GetTitle());
-            Repository.Save(_noteFile, EditorViewModel.GetRawTextLines());
+            var rawText = EditorViewModel.GetRawText();
+            var contents = FileContentsParser.Parse(rawText);
+            Repository.Save(_noteFile, contents);
         }
     }
 }

@@ -12,7 +12,8 @@ namespace NoteBox.UI.Windows
     public class MainWindowViewModel : BindableBase
     {
         private IList<NoteFile> _notes = new List<NoteFile>();
-        private string _searchPhrase;
+        private IList<HashTag> _hashTags = new List<HashTag>();
+        private string _searchPhrase = String.Empty;
         private readonly SnippetContainerViewModel _snippetContainerViewModel;
         private readonly NotesRepository _notesRepository;
 
@@ -34,6 +35,12 @@ namespace NoteBox.UI.Windows
         {
             get { return _notes; }
             set { SetProperty(ref _notes, value); }
+        }
+
+        public IList<HashTag> HashTags
+        {
+            get { return _hashTags; }
+            set { SetProperty(ref _hashTags, value); }
         }
 
         public string SearchPhrase
@@ -69,14 +76,12 @@ namespace NoteBox.UI.Windows
         {
             Notes = new ObservableCollection<NoteFile>(
                 _notesRepository.ListAllFiles());
+            HashTags = new ObservableCollection<HashTag>(
+                _notesRepository.ListAllTags());
         }
         
         private void LoadFilteredFiles(string searchPhrase)
         {
-            // var filteredFiles = NotesRepository.ListAllFiles()
-            //     .Where(f => f.FileName.Contains(searchPhrase));
-
-
             var filteredFiles = searchPhrase.Trim() == String.Empty ?
                 _notesRepository.ListAllFiles() :
                 _notesRepository.FilterFiles(searchPhrase);
@@ -96,6 +101,14 @@ namespace NoteBox.UI.Windows
             
             var window = new NoteEditorWindow(noteFile, NotesRepository);
             window.Show();
+        }
+
+        public void FilterByTag(HashTag hashTag)
+        {
+            if (hashTag.Tag == String.Empty)
+                return;
+            
+            SearchPhrase = hashTag.Tag.ToLowerInvariant();
         }
     }
 }

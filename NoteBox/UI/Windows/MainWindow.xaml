@@ -10,8 +10,11 @@
                     Command="{Binding Path=SnippetContainerViewModel.CopyTimeStampToClipboardCommand}" />
     </Window.InputBindings>
     <Window.Resources>
-        <Style x:Key="ItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Style x:Key="NoteFileItemStyle" TargetType="{x:Type ListBoxItem}">
             <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick" />
+        </Style>
+        <Style x:Key="HashTagItemStyle" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="MouseUp" Handler="HandleTagClick" />
         </Style>
     </Window.Resources>
     
@@ -30,10 +33,26 @@
             <Label DockPanel.Dock="Left">Search:</Label>
             <TextBox Text="{Binding SearchPhrase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=400}"/>
         </DockPanel>
+        <ListView DockPanel.Dock="Top" MinHeight="100" 
+                  ItemContainerStyle="{StaticResource HashTagItemStyle}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  Height="100"
+                  ItemsSource="{Binding HashTags}">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=Tag}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
         <ListBox 
             ItemsSource="{Binding Notes}"
-            ItemContainerStyle="{StaticResource ItemStyle}"
-            DisplayMemberPath="Name">
+            ItemContainerStyle="{StaticResource NoteFileItemStyle}"
+            DisplayMemberPath="Title">
         </ListBox>
     </DockPanel>
 </Window> 

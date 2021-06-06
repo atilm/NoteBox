@@ -13,13 +13,6 @@ namespace NoteBox.Domain
             SearchEngine = searchEngine;
         }
 
-        private static string DirectoryPath
-        {
-            get { return App.Configuration["CardsDirectoryPath"]; }
-        }
-
-        private FulltextSearchEngine SearchEngine { get; }
-
         public event EventHandler? FilesChanged;
 
         public IEnumerable<NoteFile> ListAllFiles()
@@ -27,6 +20,11 @@ namespace NoteBox.Domain
             return Directory.GetFiles(DirectoryPath)
                 .Select(s => new NoteFile(s))
                 .OrderByDescending(n => n.Id);
+        }
+
+        public IEnumerable<HashTag> ListAllTags()
+        {
+            return SearchEngine.StoredTags().OrderByDescending(t => t.Frequency);
         }
 
         public void RecreateSearchIndex()
@@ -44,21 +42,23 @@ namespace NoteBox.Domain
             return ListAllFiles().Any(f => f.Id == noteFile.Id);
         }
 
-        public string GetContent(NoteFile noteFile)
+        public NoteContents GetContents(NoteFile noteFile)
         {
             var fileById = ListAllFiles().First(f => f.Id == noteFile.Id);
             var filePath = Path.Join(DirectoryPath, fileById.FileName);
-            return File.ReadAllText(filePath);
+            var text = File.ReadAllText(filePath);
+
+            return FileContentsParser.Parse(text);
         }
 
-        public void Save(NoteFile noteFile, string[] rawTextLines)
+        public void Save(NoteFile noteFile, NoteContents contents)
         {
-            UpdateSearchIndex(noteFile, rawTextLines);
+            UpdateSearchIndex(noteFile, contents);
 
             var preExistingFilesWithSameId = ListAllFiles()
                 .Where(f => f.Id == noteFile.Id && f.FileName != noteFile.FileName);
 
-            File.WriteAllLines(FullPath(noteFile), rawTextLines);
+            File.WriteAllText(FullPath(noteFile), contents.Text);
 
             foreach (var path in preExistingFilesWithSameId.Select(FullPath))
                 File.Delete(path);
@@ -66,19 +66,24 @@ namespace NoteBox.Domain
             FilesChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private void UpdateSearchIndex(NoteFile noteFile, string[] rawTextLines)
+        private void UpdateSearchIndex(NoteFile noteFile, NoteContents contents)
         {
-            var text = String.Join("", rawTextLines);
-
             if (ListAllFiles().Contains(noteFile))
-                SearchEngine.UpdateFile(noteFile, text);
+                SearchEngine.UpdateFile(noteFile, contents);
             else
-                SearchEngine.AddFile(noteFile, text);
+                SearchEngine.AddFile(noteFile, contents);
         }
 
         private static string FullPath(NoteFile noteFile)
         {
             return Path.Join(DirectoryPath, noteFile.FileName);
         }
+        
+        private static string DirectoryPath
+        {
+            get { return App.Configuration["CardsDirectoryPath"]; }
+        }
+
+        private FulltextSearchEngine SearchEngine { get; }
     }
 }

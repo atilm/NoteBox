@@ -1,7 +1,4 @@
 ﻿namespace NoteBox.Domain
 {
-    public class Reference
-    {
-        
-    }
+    public record Reference(string FullText);
 }

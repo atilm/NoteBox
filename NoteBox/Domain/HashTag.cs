@@ -1,7 +1,4 @@
 ﻿namespace NoteBox.Domain
 {
-    public class HashTag
-    {
-        
-    }
+    public record HashTag(string Tag, int Frequency);
 }

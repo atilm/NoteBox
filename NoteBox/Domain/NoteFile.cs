@@ -12,37 +12,15 @@ namespace NoteBox.Domain
         public NoteFile()
         {
             Id = TimeStampGenerator.GenerateTimeStamp();
+            Title = String.Empty;
         }
-
+        
         public NoteFile(string filePath) : this()
         {
             var fileName = Path.GetFileNameWithoutExtension(filePath);
             SetFileNameWithoutExtension(fileName);
         }
-
-        public string Id { get; private set; }
-
-        public string Name { get; set; } = String.Empty;
-
-        public string FileName
-        {
-            get { return $"{Id} {Name}.txt"; }
-        }
-
-        public bool Equals(NoteFile? other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return String.Equals(Id, other.Id, StringComparison.InvariantCulture) &&
-                   String.Equals(Name, other.Name, StringComparison.InvariantCulture);
-        }
-
-        public static NoteFile FromIdAndTitle(string id, string title)
-        {
-            var noteFile = new NoteFile {Id = id.Trim(), Name = title.Trim()};
-            return noteFile;
-        }
-
+        
         public static NoteFile FromId(string id)
         {
             return FromIdAndTitle(id, String.Empty);
@@ -61,7 +39,30 @@ namespace NoteBox.Domain
                 throw new InvalidDataException($"File name {fileName} does not match expected pattern.");
 
             Id = match.Groups[1].Value;
-            Name = match.Groups[2].Value;
+            Title = match.Groups[2].Value;
+        }
+
+        public static NoteFile FromIdAndTitle(string id, string title)
+        {
+            var noteFile = new NoteFile {Id = id.Trim(), Title = title.Trim()};
+            return noteFile;
+        }
+
+        public string Id { get; private set; }
+
+        public string Title { get; private set; }
+
+        public string FileName
+        {
+            get { return $"{Id} {Title}.txt"; }
+        }
+        
+        public bool Equals(NoteFile? other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return String.Equals(Id, other.Id, StringComparison.InvariantCulture) &&
+                   String.Equals(Title, other.Title, StringComparison.InvariantCulture);
         }
 
         public override bool Equals(object? obj)
@@ -76,7 +77,7 @@ namespace NoteBox.Domain
         {
             var hashCode = new HashCode();
             hashCode.Add(Id, StringComparer.InvariantCulture);
-            hashCode.Add(Name, StringComparer.InvariantCulture);
+            hashCode.Add(Title, StringComparer.InvariantCulture);
             return hashCode.ToHashCode();
         }
 

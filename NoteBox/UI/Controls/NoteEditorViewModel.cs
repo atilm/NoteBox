@@ -45,14 +45,12 @@ namespace NoteBox.UI.Controls
 
         public string GetTitle()
         {
-            return GetRawTextLines().First();
+            return GetRawText().Split("\r\n").First();
         }
 
-        public string[] GetRawTextLines()
+        public string GetRawText()
         {
-            return new TextRange(Document.ContentStart, Document.ContentEnd)
-                .Text
-                .Split("\r\n");
+            return new TextRange(Document.ContentStart, Document.ContentEnd).Text;
         }
 
         public void Init(FlowDocument document)

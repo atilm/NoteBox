@@ -10,8 +10,8 @@ namespace NoteBox.UI.Controls
 {
     public static class TextToFlowDocumentConverter
     {
-        private static readonly Regex linkRegex = new(@"\(\s*(\d{12})\s*\|(.*)\)", RegexOptions.Compiled);
-        private static readonly Regex hashTagRegex = new(@"#\w+", RegexOptions.Compiled);
+        private static readonly Regex LinkRegex = new(@"\(\s*(\d{12})\s*\|(.*)\)", RegexOptions.Compiled);
+        private static readonly Regex HashTagRegex = new(@"#\w+", RegexOptions.Compiled);
 
         public static IEnumerable<Block> Convert(string text, ICommand navigateCommand)
         {
@@ -27,7 +27,7 @@ namespace NoteBox.UI.Controls
 
         public static (bool success, string id, string name) ParseLinkText(string linkText)
         {
-            var match = linkRegex.Match(linkText);
+            var match = LinkRegex.Match(linkText);
 
             return !match.Success
                 ? (false, String.Empty, String.Empty)
@@ -41,8 +41,8 @@ namespace NoteBox.UI.Controls
 
         private static Paragraph ToParagraph(string line, ICommand navigateCommand)
         {
-            var linkMatches = linkRegex.Matches(line);
-            var hashTagMatches = hashTagRegex.Matches(line);
+            var linkMatches = LinkRegex.Matches(line);
+            var hashTagMatches = HashTagRegex.Matches(line);
 
             var mergedMatches = linkMatches.Concat(hashTagMatches).OrderBy(m => m.Index).ToList();
 
